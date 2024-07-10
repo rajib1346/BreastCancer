@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .panel {
+            background-color: #e8f0fe;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            margin: 0;
+        }
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            flex: 1;
+            padding: 10px;
+            min-width: 200px;
+        }
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 2px;
+            border-radius: 4px;
+            border: 1px solid #bbb;
+            background-color: #ffffff;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .reset-btn {
+            background-color: #f56c6c;
+            color: white;
+        }
+        .submit-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .form-section {
+                flex-direction: column;
+            }
+            .symptoms-grid {
+                grid-template-columns: 1fr;
+            }
+            .buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Machine Learning Based Breast Cancer Prediction System</h1>
+        <form action="/" method="post" id="predictionForm">
+            <div class="panel">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="patient_name">Patient Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required>
+                    </div>
+                    <div class="form-group" id="ageGroup">
+                        <label for="age">Age:</label>
+                        <input type="text" id="age" name="age" required pattern="\d*">
+                    </div>
+                    <div class="form-group">
+                        <label for="sex">Sex:</label>
+                        <select id="sex" name="sex" required>
+                            <option value="">--Select--</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="blood_group">Blood Group:</label>
+                        <select id="blood_group" name="blood_group" required>
+                            <option value="">--Select--</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <h2 class="title">Symptoms</h2>
+                <div class="symptoms-grid" id="symptomsGrid">
+                    <!-- Symptoms fields will be populated here -->
+                </div>
+            </div>
+            <div class="buttons">
+                <button type="reset" class="reset-btn">Reset</button>
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+        <footer>
+            &copy; 2024 Rajjib Kumar Halder
+        </footer>
+    </div>
+    <script>
+        const symptoms = [
+            { id: 'radius_mean', label: 'Radius Mean' },
+            { id: 'texture_mean', label: 'Texture Mean' },
+            { id: 'perimeter_mean', label: 'Perimeter Mean' },
+            { id: 'smoothness_worst', label: 'Smoothness Worst' },
+            { id: 'concavity_mean', label: 'Concavity Mean' },
+            { id: 'concave_points_mean', label: 'Concave Points Mean' },
+            { id: 'radius_worst', label: 'Radius Worst' },
+            { id: 'fractal_dimension_worst', label: 'Fractal Dimension Worst' },
+            { id: 'texture_worst', label: 'Texture Worst' },
+            { id: 'perimeter_worst', label: 'Perimeter Worst' },
+            { id: 'concavity_worst', label: 'Concavity Worst' },
+            { id: 'concave_points_worst', label: 'Concave Points Worst' },
+            { id: 'symmetry_worst', label: 'Symmetry Worst' }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        function populateSymptoms() {
+            const grid = document.getElementById('symptomsGrid');
+            shuffleArray(symptoms); // Randomize symptoms order
+            symptoms.forEach(symptom => {
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                formGroup.innerHTML = `
+                    <label for="${symptom.id}">${symptom.label}:</label>
+                    <input type="text" id="${symptom.id}" name="${symptom.id}" required>
+                `;
+                grid.appendChild(formGroup);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', populateSymptoms); // Populate symptoms on load
+    </script>
+</body>
+</html>

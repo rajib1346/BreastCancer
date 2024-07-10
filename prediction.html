@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f7fa; /* Light blue background */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .panel {
+            padding: 20px;
+            background-color: #f0f4f8; /* Light grey background */
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            margin: 5px 0;
+        }
+        .result {
+            text-align: center;
+            font-weight: bold;
+            position: absolute;
+            right: 30px;
+            top: 20px;
+        }
+        .benign {
+            color: #27ae60; /* Green color for benign */
+        }
+        .malignant {
+            color: #d63031; /* Red color for malignant */
+        }
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        a, .button {
+            display: block;
+            width: 150px;
+            padding: 10px;
+            margin: 20px auto;
+            background-color: #007bff;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .button {
+            cursor: pointer;
+        }
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prediction Result</h1>
+        <div class="result {{ 'benign' if result == 'Benign' else 'malignant' }}">
+            <h2 style="color: {{ 'green' if result == 'Benign' else 'red' }}">{{ result }}</h2>
+        </div>
+        <div class="panel">
+            <h2>Patient Details</h2>
+            <div class="details-row">
+                <p><strong>Name:</strong> {{ details['patient_name'] }}</p>
+                <p><strong>Age:</strong> {{ details['age'] }}</p>
+                <p><strong>Sex:</strong> {{ details['sex'] }}</p>
+                <p><strong>Blood Group:</strong> {{ details['blood_group'] }}</p>
+            </div>
+        </div>
+        <div class="panel">
+            <h2>Symptoms Provided</h2>
+            <div class="symptoms-grid">
+                <p><strong>Radius Mean:</strong> {{ details['radius_mean'] }}</p>
+                <p><strong>Texture Mean:</strong> {{ details['texture_mean'] }}</p>
+                <p><strong>Perimeter Mean:</strong> {{ details['perimeter_mean'] }}</p>
+                <p><strong>Concavity Mean:</strong> {{ details['concavity_mean'] }}</p>
+                <p><strong>Concave Points Mean:</strong> {{ details['concave_points_mean'] }}</p>
+                <p><strong>Radius Worst:</strong> {{ details['radius_worst'] }}</p>
+                <p><strong>Texture Worst:</strong> {{ details['texture_worst'] }}</p>
+                <p><strong>Perimeter Worst:</strong> {{ details['perimeter_worst'] }}</p>
+                <p><strong>Smoothness Worst:</strong> {{ details['smoothness_worst'] }}</p>
+                <p><strong>Concavity Worst:</strong> {{ details['concavity_worst'] }}</p>
+                <p><strong>Concave Points Worst:</strong> {{ details['concave_points_worst'] }}</p>
+                <p><strong>Symmetry Worst:</strong> {{ details['symmetry_worst'] }}</p>
+                <p><strong>Fractal Dimension Worst:</strong> {{ details['fractal_dimension_worst'] }}</p>
+            </div>
+        </div>
+        <a href="/">Back to Home</a>
+        <div class="button" onclick="window.print();">Save</div>
+        <footer>
+            &copy; 2024 Rajib Kumar Halder
+        </footer>
+    </div>
+</body>
+</html>
