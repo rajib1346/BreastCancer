@@ -5,7 +5,7 @@ import numpy as np
 app = Flask(__name__)
 
 # Load the trained model from the pickle file
-model = pickle.load(open('C:/Users/acer/Breast_Cancer/dataset/model.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
